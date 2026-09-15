@@ -1,0 +1,17 @@
+# RAG System dependencies (ingestion + Voyage embeddings)
+
+# Embeddings / token counting
+voyageai~=0.5.0
+
+# Document parsing / MIME detection
+# Note: python-magic needs system libmagic (e.g. `brew install libmagic`)
+pypdf~=6.18.0
+python-magic~=0.4.27
+docling~=2.126.0
+
+# Ingestion / chunking
+langchain-core~=1.6.0
+langchain-text-splitters~=1.1.0
+
+# Config
+python-dotenv~=1.2.0
