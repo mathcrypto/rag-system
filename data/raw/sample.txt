@@ -2,9 +2,9 @@ Hello from the RAG sample document.
 This file is used to verify TextLoader ingestion.
 
 Retrieval-Augmented Generation (RAG) systems work best when documents are split into
-coherent chunks before embedding. Chunk size should be measured in tokens, not characters,
-because embedding models like Voyage process tokens. A common production default is 512
-tokens with about 64 tokens of overlap so context is preserved across chunk boundaries.
+coherent chunks before embedding. A common LangChain default is 1000 characters with
+about 200 characters of overlap so context is preserved across chunk boundaries.
+OpenAI embeddings (for example text-embedding-3-small) turn those chunks into vectors.
 
 Overlap helps when an answer spans two adjacent sections. Without overlap, retrieval can
 miss important sentences that sit near a split. Metadata such as source path, filename,

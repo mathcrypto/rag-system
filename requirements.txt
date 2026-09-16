@@ -1,7 +1,11 @@
-# RAG System dependencies (ingestion + Voyage embeddings)
+# RAG System dependencies (ingestion + OpenAI embeddings + Chroma)
 
-# Embeddings / token counting
-voyageai~=0.5.0
+# Embeddings / LLM
+langchain-openai~=1.6.0
+tiktoken~=0.14.0
+
+# Vector store
+langchain-chroma~=1.1.0
 
 # Document parsing / MIME detection
 # Note: python-magic needs system libmagic (e.g. `brew install libmagic`)

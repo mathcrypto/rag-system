@@ -1,37 +1,25 @@
-# Splits docs into chunks (token-aware for Voyage embeddings)
+# Splits docs into chunks (tiktoken-aware, matches rag-from-scratch indexing)
 from __future__ import annotations
 
-from pathlib import Path
-
-from dotenv import load_dotenv
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-import voyageai
 
-from loader import load_directory, load_sample
+from .loader import load_directory, load_sample
 
-load_dotenv(Path(__file__).resolve().parents[2] / ".env")
-
-EMBED_MODEL = "voyage-4"
-DEFAULT_CHUNK_SIZE = 512
-DEFAULT_CHUNK_OVERLAP = 64
-
-_vo = voyageai.Client()
-
-
-def _token_length(text: str) -> int:
-    """Count tokens with the same tokenizer Voyage uses for embedding."""
-    return _vo.count_tokens([text], model=EMBED_MODEL)
+# Detailed indexing section in rag-from-scratch (not the overview's 1000/200 chars).
+DEFAULT_CHUNK_SIZE = 300
+DEFAULT_CHUNK_OVERLAP = 50
+DEFAULT_ENCODING = "cl100k_base"  # OpenAI embeddings / GPT-3.5/4 tokenizer family
 
 
 def get_splitter(
     chunk_size: int = DEFAULT_CHUNK_SIZE,
     chunk_overlap: int = DEFAULT_CHUNK_OVERLAP,
 ) -> RecursiveCharacterTextSplitter:
-    return RecursiveCharacterTextSplitter(
+    return RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+        encoding_name=DEFAULT_ENCODING,
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
-        length_function=_token_length,
     )
 
 
@@ -49,6 +37,7 @@ def split_documents(
             "chunk_index": i,
             "chunk_size_tokens": chunk_size,
             "chunk_overlap_tokens": chunk_overlap,
+            "encoding": DEFAULT_ENCODING,
         }
     return chunks
 
