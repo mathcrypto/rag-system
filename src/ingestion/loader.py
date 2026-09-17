@@ -143,9 +143,3 @@ def load_directory(directory: str | Path = RAW_DIR) -> list[Document]:
 
 def load_sample() -> Document:
     return load_file(SAMPLE_PATH)[0]
-
-
-if __name__ == "__main__":
-    document = load_sample()
-    print(document.page_content)
-    print(document.metadata)
