@@ -15,7 +15,7 @@ OPENAI_EMBED_MODEL = os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-small")
 OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", "0"))
 
 # Retrieval / index
-RETRIEVAL_K = int(os.getenv("RETRIEVAL_K", "4"))
+RETRIEVAL_K = int(os.getenv("RETRIEVAL_K", "2"))
 MULTI_QUERY_COUNT = int(os.getenv("MULTI_QUERY_COUNT", "5"))
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "rag_docs")
 PERSIST_DIR = Path(os.getenv("PERSIST_DIR", str(ROOT / "data" / "vectordb")))
@@ -23,7 +23,7 @@ PERSIST_DIR = Path(os.getenv("PERSIST_DIR", str(ROOT / "data" / "vectordb")))
 # Reranking (Cohere)
 COHERE_API_KEY = os.getenv("COHERE_API_KEY", "")
 RERANK_MODEL = os.getenv("RERANK_MODEL", "rerank-english-v3.0")
-RERANK_TOP_N = int(os.getenv("RERANK_TOP_N", "3"))
+RERANK_TOP_N = int(os.getenv("RERANK_TOP_N", "2"))
 
 # Hybrid fusion weights (BM25 + dense)
 HYBRID_BM25_WEIGHT = float(os.getenv("HYBRID_BM25_WEIGHT", "0.5"))

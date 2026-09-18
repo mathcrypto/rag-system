@@ -1,7 +1,6 @@
-# RERANKING
+# RERANKING — ask-time step 8 (after retrieve, before the answer prompt).
 #
-# After retrieval, score (question, chunk) pairs more precisely and keep top_n.
-# Pipeline: retrieve many candidates → rerank → pass best chunks to the LLM.
+# Score (question, chunk) pairs more precisely and keep top_n.
 from __future__ import annotations
 
 from langchain_cohere import CohereRerank
@@ -15,7 +14,7 @@ def rerank(
     docs: list[Document],
     top_n: int | None = None,
 ) -> list[Document]:
-    # Cohere cross-encoder style rerank; returns the best top_n chunks.
+    # Cohere cross-encoder style rerank; returns the best top_n chunks
     if not docs:
         return []
     top_n = config.RERANK_TOP_N if top_n is None else top_n

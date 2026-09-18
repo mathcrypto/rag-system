@@ -1,15 +1,15 @@
 {
-  "include": ["scripts", "src"],
-  "extraPaths": ["src"],
+  "include": ["scripts", "backend", "frontend", "evaluation"],
+  "extraPaths": ["backend"],
   "pythonVersion": "3.14",
   "executionEnvironments": [
     {
       "root": ".",
-      "extraPaths": ["src"]
+      "extraPaths": ["backend"]
     },
     {
       "root": "scripts",
-      "extraPaths": ["../src"]
+      "extraPaths": ["../backend"]
     }
   ]
 }

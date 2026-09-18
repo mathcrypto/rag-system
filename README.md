@@ -1,69 +1,60 @@
-# RAG System
+# RAG System — end-to-end service
 
-LangChain-style RAG: load → split → embed (OpenAI) → Chroma → retrieve → (optional rerank) → generate.
+LangChain-style RAG: **load → split → embed → Chroma → retrieve → (rerank) → generate**.
 
-Supports **dense**, **BM25**, **multi-query**, **hybrid** retrieval, **LLM routing**, and **Cohere reranking**.
+**Backend** (`backend/`) and **frontend** (`frontend/`) are separate — matches the online RAG + offline ingest split.
 
-## Setup
+Supports **dense**, **BM25**, **multi-query**, **RAG-Fusion** (RRF), **hybrid**, **LLM routing**, and **Cohere reranking**.
+
+## Lifecycle
+
+```text
+data/raw  →  ingest / build_index  →  data/vectordb          (offline)
+browser   →  frontend (:5173)  →  API (:8000/api)  →  ask()  (online)
+```
+
+### 1. Setup
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt && pip install -e .
-cp .env.example .env   # set OPENAI_API_KEY (and COHERE_API_KEY for rerank)
+cp .env.example .env   # OPENAI_API_KEY; COHERE_API_KEY; CORS_ORIGINS
 ```
 
-## Data
-
-Put `.txt` / `.md` / `.pdf` files in `data/raw/`.
-
-Optional — download a small [SQuAD](https://huggingface.co/datasets/rajpurkar/squad) slice:
+### 2. Data + ingest
 
 ```bash
-pip install datasets
-python -c "
-from datasets import load_dataset
-from pathlib import Path
-out = Path('data/raw'); out.mkdir(parents=True, exist_ok=True)
-ds = load_dataset('rajpurkar/squad', split='train[:80]')
-seen, n = set(), 0
-for row in ds:
-    t = (row.get('context') or '').strip()
-    if t and t not in seen:
-        seen.add(t); (out / f'squad_{n:03d}.txt').write_text(t); n += 1
-print(n, 'files')
-"
+# put files in data/raw/
+./scripts/ingest_documents.sh
+python scripts/run_eval.py
 ```
 
-## Index
+### 3. Run API + frontend (two terminals)
 
 ```bash
-rm -rf data/vectordb/*
-python scripts/build_index.py
+python scripts/run_api.py        # http://localhost:8000  →  /api/health, /api/ask, /docs
+python scripts/run_frontend.py   # http://localhost:5173/
 ```
 
-## Ask
-
-**Routing** — an LLM picks `dense` | `bm25` | `multi_query` | `hybrid` for each question:
+Open **http://localhost:5173/** for chat. The UI calls `http://localhost:8000/api/...`.
 
 ```bash
-python -c "from generation.llm_client import answer; print(answer('What is the Grotto at Notre Dame?', use_routing=True))"
+curl -s http://localhost:8000/api/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"What is the Grotto at Notre Dame?","strategy":"dense"}'
 ```
-
-Force a strategy, or add rerank:
-
-```bash
-python -c "from generation.llm_client import answer; print(answer('What is the Grotto at Notre Dame?', strategy='hybrid'))"
-python -c "from generation.llm_client import answer; print(answer('What is the Grotto at Notre Dame?', use_routing=True, use_rerank=True))"
-```
-
-See the chosen route:
-
-```bash
-python -c "from retrieval.router import retrieve_routed; s,d=retrieve_routed('What is the Grotto at Notre Dame?'); print(s, len(d))"
-```
-
-Ask about topics that appear in your `data/raw/` files.
 
 ## Layout
 
-`src/ingestion` · `embedding` · `retrieval` (incl. `router.py`) · `reranking` · `generation` · `config`
+| Path | Role |
+|------|------|
+| `frontend/` | HTML · CSS · JS (chat client) |
+| `backend/api/` | FastAPI (`/api/health`, `/api/ask`) |
+| `backend/ingestion` · `embedding` · `retrieval` · `reranking` · `generation` | RAG pipeline |
+| `scripts/run_api.py` | Backend HTTP process |
+| `scripts/run_frontend.py` | Frontend static server |
+| `scripts/ingest_documents.sh` · `build_index.py` | Offline indexing |
+| `scripts/run_eval.py` | Retrieval smoke |
+| `evaluation/` | Eval helpers |
+
+Override API URL in the browser console if needed: `window.RAG_API_BASE = "https://your-api/api"`.

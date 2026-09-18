@@ -9,8 +9,9 @@ description = "RAG system (LangChain + OpenAI + Chroma)"
 requires-python = ">=3.11"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["backend"]
+namespaces = true
 
 [tool.pyright]
-extraPaths = ["src"]
+extraPaths = ["backend"]
 pythonVersion = "3.14"

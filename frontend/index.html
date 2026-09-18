@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAG — Ask</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <h1 class="brand"><span>RAG</span> Ask</h1>
+      <p class="lede">Grounded answers from your indexed docs — retrieve, optional rerank, then generate.</p>
+      <div class="status"><span class="dot" id="dot"></span><span id="statusText">Checking index…</span></div>
+    </header>
+
+    <main class="thread" id="thread" aria-live="polite">
+      <div class="empty" id="empty">
+        <strong>Ask anything in your corpus</strong>
+        Try “What is the Grotto at Notre Dame?”
+      </div>
+    </main>
+
+    <form class="composer" id="form">
+      <div class="row">
+        <label for="strategy">Retrieval</label>
+        <select id="strategy" name="strategy">
+          <option value="dense" selected>dense</option>
+          <option value="hybrid">hybrid</option>
+          <option value="bm25">bm25</option>
+          <option value="multi_query">multi_query</option>
+          <option value="rag_fusion">rag_fusion</option>
+          <option value="routing">route (LLM picks)</option>
+        </select>
+      </div>
+      <div class="input-row">
+        <textarea id="question" rows="2" placeholder="Ask a question…" required></textarea>
+        <button class="send" type="submit" id="send">Send</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Optional: window.RAG_API_BASE = "https://your-api.example/api" -->
+  <script src="js/chat.js"></script>
+</body>
+</html>

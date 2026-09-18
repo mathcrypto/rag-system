@@ -28,16 +28,9 @@ htmlcov/
 *.bin
 *.safetensors
 
-# RAG data artifacts (keep folder structure via .gitkeep if needed)
-data/processed/*
-!data/processed/.gitkeep
-data/vectordb/*
-!data/vectordb/.gitkeep
-
-# Optional: ignore large raw uploads, keep samples
-# data/raw/*
-# !data/raw/.gitkeep
-# !data/raw/sample.txt
+# RAG data (raw docs + vector index — local only)
+data/
+!data/.gitkeep
 
 # IDE / OS
 .idea/
